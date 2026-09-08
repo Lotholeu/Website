@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Klasse 9G – Login</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #0b1020, #1a2750);
+        color: #fff;
+    }
+
+    .center {
+        max-width: 400px;
+        margin: 80px auto;
+        background: #141a33;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.4);
+        text-align: center;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        font-size: 26px;
+    }
+
+    input {
+        width: 100%;
+        padding: 16px;
+        margin: 12px 0;
+        border-radius: 10px;
+        border: none;
+        background: #0b1020;
+        color: #fff;
+        font-size: 18px;
+        border: 1px solid #3af;
+    }
+
+    button {
+        width: 100%;
+        padding: 14px;
+        background: #3af;
+        border: none;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 12px;
+    }
+
+    button:hover {
+        background: #5cf;
+    }
+
+    #content, #adminPanel {
+        display: none;
+        max-width: 600px;
+        margin: 40px auto;
+        background: #141a33;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+
+    .info-box {
+        background: #1b2340;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+
+    textarea {
+        width: 100%;
+        height: 140px;
+        background: #0b1020;
+        color: #fff;
+        border: 1px solid #3af;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    .admin-item {
+        background: #0b1020;
+        padding: 10px;
+        border-radius: 8px;
+        margin: 6px 0;
+        border: 1px solid #3af;
+    }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="center" id="loginBox">
+    <h2>Login – Klasse 9G</h2>
+    <input type="text" id="username" placeholder="Benutzername">
+    <input type="password" id="password" placeholder="Passwort">
+    <button onclick="login()">Einloggen</button>
+    <p id="error" style="color:#f55; display:none;">Falscher Login!</p>
+</div>
+
+<!-- SCHÜLERBEREICH -->
+<div id="content">
+    <h2>Infos für die 9G</h2>
+
+    <div class="info-box" id="infoTermine">
+        <h3>📅 Termine</h3>
+        <p>• Klassenarbeit Mathe – 12.09<br>
+           • Ausflug – 20.09<br>
+           • Projektwoche – ab 01.10</p>
+    </div>
+
+    <div class="info-box" id="infoWichtig">
+        <h3>📚 Wichtige Infos</h3>
+        <p>• Präsentationen müssen abgegeben werden.<br>
+           • Neue Sitzordnung ab nächster Woche.<br>
+           • Handyregel bleibt bestehen.</p>
+    </div>
+
+    <button onclick="logout()">🔙 Zurück zum Login</button>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel">
+    <h2>Admin‑Bereich</h2>
+
+    <div class="info-box">
+        <h3>📅 Termine bearbeiten</h3>
+        <textarea id="editTermine"></textarea>
+    </div>
+
+    <div class="info-box">
+        <h3>📚 Wichtige Infos bearbeiten</h3>
+        <textarea id="editWichtig"></textarea>
+    </div>
+
+    <div class="info-box">
+        <h3>👤 Admin‑Verwaltung</h3>
+
+        <input type="text" id="newUser" placeholder="Neuer Admin – Benutzername">
+        <input type="password" id="newPass" placeholder="Neuer Admin – Passwort">
+        <button onclick="addAdmin()">Admin hinzufügen</button>
+
+        <h4>Aktuelle Admins:</h4>
+        <div id="adminList"></div>
+    </div>
+
+    <button onclick="saveChanges()">Speichern</button>
+    <button onclick="logout()">🔙 Zurück zum Login</button>
+</div>
+
+<script>
+let admins = {
+    "louis": "Lotholeu8!"
+};
+
+function login() {
+    const user = document.getElementById("username").value.trim();
+    const pass = document.getElementById("password").value.trim();
+
+    if (pass === "9g!") {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("content").style.display = "block";
+        return;
+    }
+
+    if (admins[user] && pass === admins[user]) {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+
+        document.getElementById("editTermine").value =
+            document.getElementById("infoTermine").innerText;
+
+        document.getElementById("editWichtig").value =
+            document.getElementById("infoWichtig").innerText;
+
+        updateAdminList();
+        return;
+    }
+
+    document.getElementById("error").style.display = "block";
+}
+
+function saveChanges() {
+    document.getElementById("infoTermine").innerHTML =
+        "<h3>📅 Termine</h3><p>" +
+        document.getElementById("editTermine").value.replace(/\n/g, "<br>") +
+        "</p>";
+
+    document.getElementById("infoWichtig").innerHTML =
+        "<h3>📚 Wichtige Infos</h3><p>" +
+        document.getElementById("editWichtig").value.replace(/\n/g, "<br>") +
+        "</p>";
+
+    alert("Gespeichert!");
+}
+
+function addAdmin() {
+    const newUser = document.getElementById("newUser").value.trim();
+    const newPass = document.getElementById("newPass").value.trim();
+
+    if (!newUser || !newPass) {
+        alert("Bitte Benutzername und Passwort eingeben.");
+        return;
+    }
+
+    admins[newUser] = newPass;
+    updateAdminList();
+    alert("Admin hinzugefügt: " + newUser);
+}
+
+function deleteAdmin(name) {
+    delete admins[name];
+    updateAdminList();
+}
+
+function updateAdminList() {
+    let html = "";
+    for (let user in admins) {
+        html += `
+            <div class="admin-item">
+                <b>${user}</b><br>
+                <button onclick="deleteAdmin('${user}')">Admin löschen</button>
+            </div>
+        `;
+    }
+    document.getElementById("adminList").innerHTML = html;
+}
+
+function logout() {
+    document.getElementById("content").style.display = "none";
+    document.getElementById("adminPanel").style.display = "none";
+    document.getElementById("loginBox").style.display = "block";
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
+}
+</script>
+
+</body>
+</html>
