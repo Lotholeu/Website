@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Klasse 9G – Login</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #0b1020, #1a2750);
+        color: #fff;
+    }
+
+    .center {
+        max-width: 400px;
+        margin: 80px auto;
+        background: #141a33;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.4);
+        text-align: center;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 8px;
+        border: none;
+        background: #0b1020;
+        color: #fff;
+        font-size: 16px;
+        border: 1px solid #3af;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background: #3af;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background: #5cf;
+    }
+
+    #content, #adminPanel {
+        display: none;
+        max-width: 600px;
+        margin: 40px auto;
+        background: #141a33;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+
+    .info-box {
+        background: #1b2340;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+
+    .info-box h3 {
+        margin: 0 0 10px 0;
+    }
+
+    textarea {
+        width: 100%;
+        height: 120px;
+        background: #0b1020;
+        color: #fff;
+        border: 1px solid #3af;
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 15px;
+    }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="center" id="loginBox">
+    <h2>Login – Klasse 9G</h2>
+    <input type="text" id="username" placeholder="Benutzername">
+    <input type="password" id="password" placeholder="Passwort">
+    <button onclick="login()">Einloggen</button>
+    <p id="error" style="color:#f55; display:none;">Falscher Login!</p>
+</div>
+
+<!-- SCHÜLERBEREICH -->
+<div id="content">
+    <h2>Infos für die 9G</h2>
+
+    <div class="info-box" id="infoTermine">
+        <h3>📅 Termine</h3>
+        <p>• Klassenarbeit Mathe – 12.09<br>
+           • Ausflug – 20.09<br>
+           • Projektwoche – ab 01.10</p>
+    </div>
+
+    <div class="info-box" id="infoWichtig">
+        <h3>📚 Wichtige Infos</h3>
+        <p>• Präsentationen müssen abgegeben werden.<br>
+           • Neue Sitzordnung ab nächster Woche.<br>
+           • Handyregel bleibt bestehen.</p>
+    </div>
+
+    <div class="info-box" id="infoLehrer">
+        <h3>🧑‍🏫 Lehrerhinweise</h3>
+        <p>• Materialien für Physik im Klassenraum.<br>
+           • Englisch: Vokabeltest nächste Woche.</p>
+    </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel">
+    <h2>Admin‑Bereich (Louis)</h2>
+
+    <div class="info-box">
+        <h3>📅 Termine bearbeiten</h3>
+        <textarea id="editTermine"></textarea>
+    </div>
+
+    <div class="info-box">
+        <h3>📚 Wichtige Infos bearbeiten</h3>
+        <textarea id="editWichtig"></textarea>
+    </div>
+
+    <div class="info-box">
+        <h3>🧑‍🏫 Lehrerhinweise bearbeiten</h3>
+        <textarea id="editLehrer"></textarea>
+    </div>
+
+    <button onclick="saveChanges()">Speichern</button>
+</div>
+
+<script>
+function login() {
+    const user = document.getElementById("username").value.trim();
+    const pass = document.getElementById("password").value.trim();
+
+    // Schüler Login
+    if (pass === "9g!") {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("content").style.display = "block";
+        return;
+    }
+
+    // Admin Login
+    if (user === "louis" && pass === "Lotholeu8!") {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+
+        // Inhalte in Admin-Felder laden
+        document.getElementById("editTermine").value =
+            document.getElementById("infoTermine").innerText;
+
+        document.getElementById("editWichtig").value =
+            document.getElementById("infoWichtig").innerText;
+
+        document.getElementById("editLehrer").value =
+            document.getElementById("infoLehrer").innerText;
+
+        return;
+    }
+
+    // Falscher Login
+    document.getElementById("error").style.display = "block";
+}
+
+function saveChanges() {
+    // Änderungen übernehmen
+    document.getElementById("infoTermine").innerHTML =
+        "<h3>📅 Termine</h3><p>" + document.getElementById("editTermine").value.replace(/\n/g, "<br>") + "</p>";
+
+    document.getElementById("infoWichtig").innerHTML =
+        "<h3>📚 Wichtige Infos</h3><p>" + document.getElementById("editWichtig").value.replace(/\n/g, "<br>") + "</p>";
+
+    document.getElementById("infoLehrer").innerHTML =
+        "<h3>🧑‍🏫 Lehrerhinweise</h3><p>" + document.getElementById("editLehrer").value.replace(/\n/g, "<br>") + "</p>";
+
+    alert("Gespeichert!");
+}
+</script>
+
+</body>
+</html>
